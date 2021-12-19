@@ -50,7 +50,7 @@ public class EnemyLayerHandler : MonoBehaviour
         int count = enemyMaps.Count;
         for (int i = 0; i < count; i++)
         {
-            enemyMaps[i].CollectDataForExport(ref data, i);
+            enemyMaps[i].CollectDataForExport(ref data, i, buttons[i].triggerCondition);
         }
     }
 
@@ -63,7 +63,7 @@ public class EnemyLayerHandler : MonoBehaviour
 
     void Start()
     {
-        AddLayer();
+        AddLayer(Enums.RoomEventTriggerCondition.ON_ENTER_WITH_ENEMIES);
         for (int i = 1; i < scheduledLayers; i++)
         {
             AddLayer();
@@ -102,10 +102,14 @@ public class EnemyLayerHandler : MonoBehaviour
         PaletteDropdown.Instance.SetValue(TilemapHandler.MapType.Enemies);
     }
 
-    public EnemyMap AddLayer()
+    public EnemyMap AddLayer(Enums.RoomEventTriggerCondition triggerCondition = Enums.RoomEventTriggerCondition.ON_ENEMIES_CLEARED)
     {
         var button = Instantiate(layerButtonPrefab.gameObject, buttonContainer).GetComponent<EnemyLayerButton>();
         button.SetText("Enemy Wave " + buttons.Count);
+
+        button.triggerDropdown.value = (int)triggerCondition;
+        button.triggerCondition = triggerCondition;
+        button.OnValueChanged();
         buttons.Add(button);
         RepositionButtons();
 

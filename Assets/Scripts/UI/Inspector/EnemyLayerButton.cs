@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RoomEventTriggerCondition = Enums.RoomEventTriggerCondition;
 
 public class EnemyLayerButton : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class EnemyLayerButton : MonoBehaviour
     private GameObject selectedPanel;
     public TilemapHandler map;
     private Text textComponent;
-
-
+    public Dropdown triggerDropdown;
+    public List<Transform> triggerDropdowns;
+    
+    public RoomEventTriggerCondition triggerCondition;
     public bool Selected
     {
         get { return m_selected; }
@@ -27,6 +30,26 @@ public class EnemyLayerButton : MonoBehaviour
     {
         this.selectedPanel = transform.Find("Selected Panel").gameObject;
         this.textComponent = transform.Find("Text").GetComponent<Text>();
+        SetupCategoryDropdowns();
+    }
+
+    private void SetupCategoryDropdowns()
+    {
+        triggerDropdowns = new List<Transform>();
+        SetupDropdown<RoomEventTriggerCondition>(triggerDropdown);
+
+        triggerDropdowns.Add(triggerDropdown.transform);
+    }
+
+    private void SetupDropdown<T>(Dropdown dropdown) where T : Enum
+    {
+        List<string> options = new List<string>();
+        foreach (var e in Enum.GetValues(typeof(T)))
+        {
+            options.Add(e.ToString());
+        }
+        dropdown.AddOptions(options);
+
     }
 
     public void OnClick()
@@ -39,5 +62,13 @@ public class EnemyLayerButton : MonoBehaviour
     public void SetText(string text)
     {
         this.textComponent.text = text;
+
+    }
+
+    public void OnValueChanged()
+    {
+        triggerCondition = Enums.GetEnumValue<RoomEventTriggerCondition>(triggerDropdown.options[triggerDropdown.value].text);
+        Debug.Log(triggerCondition);
+        Debug.Log("changed");
     }
 }

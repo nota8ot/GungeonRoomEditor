@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class CanvasHandler : MonoBehaviour
 {
     public static CanvasHandler Instance;
+    public InputField dimX, dimY;
 
     void Start()
     {
@@ -34,6 +36,10 @@ public class CanvasHandler : MonoBehaviour
         FindObjectOfType<GridMap>()?.ResetAppearance();
         InputHandler.Instance.ClearUndoRedo();
     }
+
+    
+
+
 
     public static BoundsInt GetTrimmedBounds(Tilemap map)
     {

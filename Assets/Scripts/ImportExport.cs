@@ -27,6 +27,7 @@ public static class ImportExport
             enemyGUIDs = new string[0],
             enemyPositions = new Vector2[0],
             enemyReinforcementLayers = new int[0],
+            waveTriggers = new string[0],
             exitDirections = new string[0],
             exitPositions = new Vector2[0],
             floors = new string[0],
@@ -43,7 +44,11 @@ public static class ImportExport
         DumpTexture(texture);
         EnemyLayerHandler.Instance.CollectDataForExport(ref data);
         m.GetTilemap(MapType.Exits).GetComponent<ExitMap>().CollectDataForExport(ref data);
-        m.GetTilemap(MapType.Placeables).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
+        m.GetTilemap(MapType.Decoration).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
+        m.GetTilemap(MapType.Loot).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
+        m.GetTilemap(MapType.Traps).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
+        m.GetTilemap(MapType.Interactables).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
+        //m.GetTilemap(MapType.UI).GetComponent<PlaceableMap>().CollectDataForExport(ref data);
 
         Manager.Instance.roomProperties.CollectRoomProperties(ref data);
         using (StreamWriter sw = new StreamWriter(path, true))
@@ -136,12 +141,32 @@ public static class ImportExport
         }
     }
 
+
+
     private static Tile TileFromColor(Color color, TilemapHandler tilemapHandler)
     {
         if (color == Color.black)
             return tilemapHandler.palette["pit"];
         else if (color == Color.white)
             return tilemapHandler.palette["floor"];
+
+        else if (color == new Color32(0, 127, 255, 255))
+            return tilemapHandler.palette["ice"];
+        else if (color == new Color32(0, 0, 127, 255))
+            return tilemapHandler.palette["water"];
+        else if (color == new Color32(127, 0, 0, 255))
+            return tilemapHandler.palette["carpet"];
+        else if (color == new Color32(127, 255, 127, 255))
+            return tilemapHandler.palette["grass"];
+        else if (color == new Color32(127, 127, 127, 255))
+            return tilemapHandler.palette["bone"];
+        else if (color == new Color32(255, 127, 0, 255))
+            return tilemapHandler.palette["flesh"];
+        else if (color == new Color32(255, 127, 127, 255))
+            return tilemapHandler.palette["goop"];
+        else if (color == new Color32(0, 255, 0, 255))
+            return tilemapHandler.palette["damage"];
+
         else if (color == Color.magenta)
             return null;
         else
@@ -152,7 +177,7 @@ public static class ImportExport
     {
         try
         {
-            var mapHandler = Manager.Instance.GetTilemap(MapType.Placeables);
+            var mapHandler = Manager.Instance.GetTilemap(MapType.Decoration);
             mapHandler.InitializeDatabase();
             string id, guid;
             Vector2 position;
@@ -176,7 +201,7 @@ public static class ImportExport
             Debug.Log(e.StackTrace);
         }
     }
-
+    public static Dictionary<int, string> triggersForImport = new Dictionary<int, string>();
     public static void BuildEnemyMapsFromData(RoomData data)
     {
         if (EnemyLayerHandler.Instance.LayerCount == 0) return;
@@ -202,6 +227,11 @@ public static class ImportExport
                 continue;
             }
             tileArrays[layer][(int)position.x, (int)position.y] = mapHandler.palette[id];
+
+            if (!triggersForImport.ContainsKey(layer))
+            {
+                triggersForImport.Add(layer, data.waveTriggers[i]);
+            }
         }
 
         for (int i = 0; i < EnemyLayerHandler.Instance.LayerCount; i++)
@@ -210,11 +240,11 @@ public static class ImportExport
 
     public static void PrepareEnemyMaps(RoomData data)
     {
-        if (data.enemyGUIDs == null || data.enemyReinforcementLayers == null || data.enemyPositions == null)
+        if (data.enemyGUIDs == null || data.enemyReinforcementLayers == null || data.enemyPositions == null || data.waveTriggers == null)
             return;
-        if (data.enemyGUIDs.Length != data.enemyReinforcementLayers.Length || data.enemyGUIDs.Length != data.enemyPositions.Length)
+        if (data.enemyGUIDs.Length != data.enemyReinforcementLayers.Length || data.enemyGUIDs.Length != data.enemyPositions.Length || data.enemyGUIDs.Length != data.waveTriggers.Length)
         {
-            Debug.LogError($"Uneven enemy data array length: {data.enemyGUIDs.Length} != {data.enemyPositions.Length} != {data.enemyReinforcementLayers.Length}");
+            Debug.LogError($"Uneven enemy data array length: {data.enemyGUIDs.Length} != {data.enemyPositions.Length} != {data.enemyReinforcementLayers.Length} != {data.waveTriggers.Length}");
             return;
         }
 
@@ -254,7 +284,9 @@ public static class ImportExport
             category,
             normalSubCategory,
             specialSubCategory,
-            bossSubCategory;
+            bossSubCategory,
+            musicState;
+        public string[] waveTriggers;
         public Vector2[] enemyPositions;
         public string[] enemyGUIDs;
         public Vector2[] placeablePositions;
@@ -264,7 +296,9 @@ public static class ImportExport
         public string[] exitDirections;
         public string[] floors;
         public float weight;
+        public int visualSubtypes;
         public bool isSpecialRoom;
+        public bool isDarkRoom;
         public bool shuffleReinforcementPositions, doFloorDecoration, doWallDecoration, doLighting;
     }
 }

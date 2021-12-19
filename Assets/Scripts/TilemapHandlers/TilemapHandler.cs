@@ -8,7 +8,7 @@ using RoomData = ImportExport.RoomData;
 public abstract class TilemapHandler : MonoBehaviour
 {
     public TileDatabase tileDatabase;
-    public enum MapType { Environment, Exits, Enemies, Placeables, UI }
+    public enum MapType { Environment, Exits, Enemies, Interactables, Loot, Traps, Decoration, UI }
 
     [HideInInspector]
     public Tilemap map;

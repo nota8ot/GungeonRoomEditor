@@ -16,7 +16,7 @@ public class Manager : MonoBehaviour
 
     public bool LateStartCompleted = false;
     public InputHandler inputHandler;
-    public TilemapHandler environment, exits, placeables;
+    public TilemapHandler environment, exits, placeables, npc, loot, traps;
     public GameObject editorPanel;
     public Tile emptyTile;
     public GameObject tileText;
@@ -49,8 +49,14 @@ public class Manager : MonoBehaviour
                 return environment;
             case TilemapHandler.MapType.Exits:
                 return exits;
-            case TilemapHandler.MapType.Placeables:
+            case TilemapHandler.MapType.Decoration:
                 return placeables;
+            case TilemapHandler.MapType.Loot:
+                return loot;
+            case TilemapHandler.MapType.Interactables:
+                return npc;
+            case TilemapHandler.MapType.Traps:
+                return traps;
         }
         return null;
     }

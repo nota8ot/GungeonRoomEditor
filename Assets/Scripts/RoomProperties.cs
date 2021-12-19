@@ -9,6 +9,7 @@ using RoomCategory = Enums.RoomCategory;
 using RoomNormalSubCategory = Enums.RoomNormalSubCategory;
 using RoomBossSubCategory = Enums.RoomBossSubCategory;
 using RoomSpecialSubCategory = Enums.RoomSpecialSubCategory;
+using DungeonMusicState = Enums.DungeonMusicState;
 using RoomData = ImportExport.RoomData;
 public class RoomProperties
 {
@@ -16,12 +17,16 @@ public class RoomProperties
     public RoomNormalSubCategory normalSubCategory;
     public RoomBossSubCategory bossSubCategory;
     public RoomSpecialSubCategory specialSubCategory;
+    public DungeonMusicState dungeonMusicState;
     public bool 
         shuffleReinforcementPositions = false, 
         doFloorDecoration = true, 
         doWallDecoration = true, 
-        doLighting = true;
+        doLighting = true,
+        useVisualSubTypes = true,
+        isDark = false;
     public float weight = 1f;
+    public int visualSubtypes = -1;
 
     public Dictionary<string, bool> validTilesets = new Dictionary<string, bool>();
 
@@ -38,12 +43,16 @@ public class RoomProperties
         data.normalSubCategory = normalSubCategory.ToString();
         data.bossSubCategory = bossSubCategory.ToString();
         data.specialSubCategory = specialSubCategory.ToString();
+        data.musicState = dungeonMusicState.ToString();
 
         data.weight = this.weight;
         data.shuffleReinforcementPositions = shuffleReinforcementPositions;
         data.doFloorDecoration = doFloorDecoration;
         data.doWallDecoration = doWallDecoration;
         data.doLighting = doLighting;
+        data.isDarkRoom = isDark;
+
+        data.visualSubtypes = visualSubtypes;
 
         List<string> floors = new List<string>();
         foreach (var floor in validTilesets)
@@ -74,10 +83,12 @@ public class RoomProperties
             }
         }
 
+        this.isDark = data.isDarkRoom;
         this.weight = data.weight;
         this.shuffleReinforcementPositions = data.shuffleReinforcementPositions;
         this.doFloorDecoration = data.doFloorDecoration;
         this.doWallDecoration = data.doWallDecoration;
         this.doLighting = data.doLighting;
+        this.visualSubtypes = data.visualSubtypes;
     }
 }

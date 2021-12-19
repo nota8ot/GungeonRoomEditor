@@ -61,7 +61,7 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_FontData.m_Font
     value: 
-    objectReference: {fileID: 12800000, guid: 9d32db442bb2bef4aaa1f561ed938d62, type: 3}
+    objectReference: {fileID: 12800000, guid: f86d6e84541c82f439cc41372c259ae7, type: 3}
   - target: {fileID: 0}
     propertyPath: m_FontData.m_FontSize
     value: 14

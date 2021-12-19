@@ -36,7 +36,23 @@ public class PlaceableMap : TilemapHandler
 
     public override TileDatabase InitializeDatabase()
     {
-        tileDatabase = new PlaceableDatabase();
+        switch (base.type)
+        {
+            case MapType.Traps:
+                tileDatabase = new TrapDatabase();
+                break;
+            case MapType.Loot:
+                tileDatabase = new LootDatabase();
+                break;
+            case MapType.Decoration:
+                tileDatabase = new DecorDatabase();
+                break;
+
+            case MapType.Interactables:
+                tileDatabase = new NpcDatabase();
+                break;
+        }
+        
         tileDatabase.spriteDirectory = "sprites/placeables/";
         return tileDatabase;
     }

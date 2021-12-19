@@ -9,6 +9,7 @@ using RoomNormalSubCategory = Enums.RoomNormalSubCategory;
 using RoomBossSubCategory = Enums.RoomBossSubCategory;
 using RoomSpecialSubCategory = Enums.RoomSpecialSubCategory;
 using CategoryType = Enums.CategoryType;
+using DungeonMusicState = Enums.DungeonMusicState;
 [RequireComponent(typeof(HideableObject))]
 public class RoomPropertiesMenu : MonoBehaviour
 {
@@ -16,12 +17,13 @@ public class RoomPropertiesMenu : MonoBehaviour
     private Dictionary<string, ChamberButton> chamberButtons;
     private bool dirty;
     private Button applyButton, backButton;
-    public ToggleButton shuffleReinforcementPositionsButton, floorDecoButton, wallDecoButton, lightingButton;
+    public ToggleButton shuffleReinforcementPositionsButton, floorDecoButton, wallDecoButton, lightingButton, darkButton;
     public Dropdown categoryDropdown,
         normalDropdown,
         specialDropdown,
-        bossDropdown;
-    public InputField weightField;
+        bossDropdown,
+        musicDropDown;
+    public InputField weightField, visualSubtypeField;
     public Transform secretDropdownDummy;
     public List<Transform> subCategoryDropdowns;
     private HideableObject m_hideable;
@@ -89,21 +91,35 @@ public class RoomPropertiesMenu : MonoBehaviour
 
     public void OnApplyClicked()
     {
+        int tileSetAmount = 0;
         this.applyButton.interactable = false;
         RoomProperties properties = Manager.Instance.roomProperties;
         foreach (var button in chamberButtons.Values)
         {
             properties.validTilesets[button.tileset.ToString()] = button.Toggled;
+            if (button.Toggled)
+            {
+                tileSetAmount++;
+            }
         }
+
         properties.category = GetCategory<RoomCategory>(categoryDropdown);
         properties.normalSubCategory = GetCategory<RoomNormalSubCategory>(normalDropdown);
         properties.specialSubCategory = GetCategory<RoomSpecialSubCategory>(specialDropdown);
         properties.bossSubCategory = GetCategory<RoomBossSubCategory>(bossDropdown);
+       
+        properties.dungeonMusicState = GetCategory<DungeonMusicState>(musicDropDown);
+
         properties.weight = float.Parse(weightField.text);
+        properties.visualSubtypes = int.Parse(visualSubtypeField.text);
+
+
         properties.shuffleReinforcementPositions = shuffleReinforcementPositionsButton.Toggled;
         properties.doFloorDecoration = floorDecoButton.Toggled;
         properties.doWallDecoration = wallDecoButton.Toggled;
         properties.doLighting = lightingButton.Toggled;
+        Debug.Log(darkButton.Toggled);
+        properties.isDark = darkButton.Toggled;
     }
 
     public void OnWeightChanged()
@@ -112,6 +128,14 @@ public class RoomPropertiesMenu : MonoBehaviour
         bool success = float.TryParse(weightField.text, out val);
         if (!success)
             weightField.text = "1";
+    }
+
+    public void OnVisualSubtypeChanged()
+    {
+        float val;
+        bool success = float.TryParse(visualSubtypeField.text, out val);
+        if (!success)
+            visualSubtypeField.text = "-1";
     }
 
     private T GetCategory<T>(Dropdown dropdown) where T : Enum
@@ -139,6 +163,7 @@ public class RoomPropertiesMenu : MonoBehaviour
         }
 
         weightField.text = properties.weight.ToString();
+        visualSubtypeField.text = properties.visualSubtypes.ToString();
         shuffleReinforcementPositionsButton.Toggled = properties.shuffleReinforcementPositions;
         floorDecoButton.Toggled = properties.doFloorDecoration;
         wallDecoButton.Toggled = properties.doWallDecoration;
@@ -185,6 +210,7 @@ public class RoomPropertiesMenu : MonoBehaviour
             options.Add(e.ToString());
         }
         dropdown.AddOptions(options);
+        
     }
 
 }

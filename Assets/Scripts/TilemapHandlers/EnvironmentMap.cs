@@ -49,6 +49,22 @@ public class EnvironmentMap : TilemapHandler
                     texture.SetPixel(x, y, Color.grey);
                 else if (name.Contains("pit"))
                     texture.SetPixel(x, y, Color.black);
+                else if (name.Contains("ice"))
+                    texture.SetPixel(x, y, new Color32(0, 127, 255, 255));
+                else if (name.Contains("water"))
+                    texture.SetPixel(x, y, new Color32(0, 0, 127, 255));
+                else if (name.Contains("carpet"))
+                    texture.SetPixel(x, y, new Color32(127, 0, 0, 255));
+                else if (name.Contains("grass"))
+                    texture.SetPixel(x, y, new Color32(127, 255, 127, 255));
+                else if (name.Contains("bone"))
+                    texture.SetPixel(x, y, new Color32(127, 127, 127, 255));
+                else if (name.Contains("flesh"))
+                    texture.SetPixel(x, y, new Color32(255, 127, 0, 255));
+                else if (name.Contains("goop"))
+                    texture.SetPixel(x, y, new Color32(255, 127, 127, 255));
+                else if (name.Contains("damage"))
+                    texture.SetPixel(x, y, new Color32(0, 255, 0, 255));
             }
         }
         return texture;
